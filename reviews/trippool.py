@@ -1,16 +1,18 @@
+#!/usr/bin/env python
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 import requests
-from datum import DatumBox
+# from datum import DatumBox
 from collections import Counter
 from multiprocessing import Pool
-from model import Reviews
+import sys
+from models.model import Reviews
 # import ssl
 # from functools import wraps
 # def sslwrap(func):
 #     @wraps(func)
 #     def bar(*args, **kw):
-#         kw['ssl_version'] = ssl.PROTOCOL_TLSv1
+#         kw['ssl_version'] = ssl.PROTOCOL_ntienTLSv1
 #         return func(*args, **kw)
 #     return bar
 
@@ -72,22 +74,6 @@ class TripAdvisor(object):
 		links= self.generate_link()
 		pool= Pool(8)
 		pool.map(self.sub_get,links)
-		# return results
-		# for i in links:
-		# 	return i
-		# 	response= urlopen(i).read()
-		# 	soup= BeautifulSoup(response)
-		# 	review_link=soup.find_all('div',{'class':'quote'})
-
-		# 	for j in review_link:
-		# 		rl = j.find("a",href=True)
-		# 		review_res= urlopen(base_url+rl['href']).read()
-		# 		soup2= BeautifulSoup(review_res)
-		# 		rating=soup2.find('img',{'class':'sprite-rating_s_fill'})['alt']
-		# 		review= soup2.find('p',{'property':'reviewBody'}).text +"\n"+"#rating: "+ rating
-		# 		print("chunk done")
-		# 		reviews.append(review)
-		# return reviews
 	def multi(self):
 		links= self.generate_link()
 		# return links
@@ -113,39 +99,6 @@ class TripAdvisor(object):
 			print (most_frequent_words_so_far)
 			# print (most_frequent_words_so_far)
 			counter+=1
-	# def make_call(self):
-	# 	links= self.generate_link()
-	# 	raw_html=[]
-	# 	for i in links:
-	# 		raw_html.append(urlopen(i).read())
-	# 	return raw_html
-	# def parse_reviews(self):
-	# 	raw_html=self.make_call()
-	# 	raw_reviews=[]
-	# 	for i in raw_html:
-	# 		soup= BeautifulSoup(i)
-	# 		raw_reviews.append(soup.find_all('div',{'class':'innerBubble'}))
-	# 	return raw_reviews
-
-	# def get_reviews(self):
-	# 	raw_reviews= self.make_call()
-	# 	# return type(raw_reviews[0])
-	# 	base_url= "https://www.tripadvisor.in"
-	# 	# return raw_reviews
-	# 	result=[]
-	# 	return raw_reviews
-	# 	for i in raw_reviews:
-	# 		soup= BeautifulSoup(i)
-	# 		rating=soup.find_all('img',{'class':'spritie_rating_sfill'})
-	# 		review_link=base_url+soup.find('div',{'class':'quote'}).find('a',href=True)['href']
-	# 		response = urlopen(review_link).read()
-	# 		soup = BeautifulSoup(response)
-	# 		review= soup.find('p',{'property':'reviewBody'}).text
-	# 		result.append((rating,review))
-	# 	return result
-
-			
-
 
 test_url="https://www.tripadvisor.in/Restaurant_Review-g1062901-d4696931-Reviews-Country_Inn_Suites_by_Carlson_Sahibabad-Ghaziabad_Uttar_Pradesh.html"
 test= TripAdvisor(test_url)
