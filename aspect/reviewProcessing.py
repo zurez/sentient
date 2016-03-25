@@ -8,15 +8,18 @@ from nltk.tokenize import sent_tokenize
 from nltk.corpus import stopwords
 from nltk.tag import pos_tag
 import nltk
-import aspectSegmenter 
+from aspect import aspectSegmenter 
 import pandas as pd
 import re
 import os
+from aspect.models.model import Aspect,Reviews,ChiFinal
+# nltk.download('')
 
 lemmatizer = nltk.WordNetLemmatizer()
 
 # Import stop words just once
-stops = set(stopwords.words("english_stop_lara")) 
+# stops = set(stopwords.words("english_stop_lara"))  #Not able to find the file. Using the normal corpus ~Zurez
+stops= set(stopwords.words("english"))
 
 # Indexed Vocabulary
 m_vocabulary = dict()
@@ -47,20 +50,22 @@ class Sentence(object):
 # 1. Use NLTK to Tokenize the reviews and create sentences
 # 2. Apply POS Tagger, Lemma and regular expression constraints
 # 3. Expand the vocabulary per sentences        
-def loadReviewAndProcess(filename):
+def loadReviewAndProcess():
     # Loading Reviews in a data frame
-    df = pd.read_csv(filename)
-    num_reviews = len(df)
+    # df = pd.read_csv(filename)
+    reviews= Reviews.objects()
+    # num_reviews = len(df)
     # Adding ID column to existing data frame
-    df['RID'] = range(1, num_reviews + 1)
-    reviews = df["review"]    
+    # df['RID'] = range(1, num_reviews + 1)
+    # reviews = df["review"]    
     rid = 0
-
+    # print(df["review"])
+    # return "finish"
     qualified_sentences = []
 
     print ('processing raw reviews ID:'),
     for review in reviews:
-        sentences = sent_tokenize(review)
+        sentences = sent_tokenize(review.review)
         m_stns = []
 
         
@@ -72,7 +77,9 @@ def loadReviewAndProcess(filename):
             if (tokens is not None) and (len(tokens)>2):
                 stn = addSentences(tokens, pos_tag(tokens), getLemma(tokens), stops)
                 # print (stn)
-                m_stns.append(Sentence(df['RID'][rid], df['rating'][rid], stn))
+                # print("Zurez",df['RID'][rid])
+                # print(review.rating)
+                m_stns.append(Sentence(rid+1, review.rating, stn))
 
                 qualified_sentences.append(sentence)
 
@@ -122,11 +129,13 @@ def getLemma(tokens):
     return lemma  
 
 # Save Final Aspect Annotated Sentences
-def saveAnnotatedSentences(m_sentences_annotated, q_sentences, SOutfilename):
+def saveAnnotatedSentences(m_sentences_annotated, q_sentences,filename,survey_id,provider):
     joined_sentences = []
     sentences_id = []
     aspect_annot = []
+    print("test",survey_id,provider)
     for stn in m_sentences_annotated:
+       
         sentences_id.append(stn.rid)
         # print (stn.aspectID)
         # asp_ID = ""
@@ -139,21 +148,27 @@ def saveAnnotatedSentences(m_sentences_annotated, q_sentences, SOutfilename):
         # else:
         #     asp_ID = "None"
         # aspect_annot.append(asp_ID)
-        
+     
         aspect_annot.append(stn.aspectID)
+
         wtokens = []
         # print (stn.ttoken)
         for tkn in stn.ttoken:
             # print (tkn)
             wtokens.append(tkn.lemma)
+        sentences=" ".join(wtokens)
         joined_sentences.append(" ".join(wtokens))
         # print (joined_sentences)
-
+        # print ("count",count)
+        # print ("a",a)
+        # ChiFinal(survey_id=survey_id,provider=provider,rid=stn.rid,aspects=stn.aspectID,original=q_sentences[count],sentences=sentences).save()
+        # count+=1
+    # ChiFinal(survey_id=survey_id,provider=provider,data={"RID":sentences_id, "sentences":joined_sentences, "aspects":aspect_annot, "original":q_sentences})
     output = pd.DataFrame( data={"RID":sentences_id, "sentences":joined_sentences, "aspects":aspect_annot, "original":q_sentences})     
-    output.to_csv(SOutfilename)    
+    output.to_csv("aspect/"+filename+"#"+survey_id+"#"+provider)    
 
 # Save final Aspect Keywords list
-def saveExtendedAspectKeywords(m_aspectkeywords_fixed, AOutfilename):    
+def saveExtendedAspectKeywords(m_aspectkeywords_fixed,AOutfilename):    
     f = open(AOutfilename, 'w')
     for key, value in m_aspectkeywords_fixed.items():
         f.write(key + ': ')
@@ -162,9 +177,24 @@ def saveExtendedAspectKeywords(m_aspectkeywords_fixed, AOutfilename):
         f.write('\n')
     f.close()        
         
+class ReviewP(object):
+    def __init__(self,survey_id,provider):
+        self.sid= survey_id
+        self.p= provider
+        # self.s= sector
+    def run(self):
+        m_aspectkeywords = aspectSegmenter.loadAspectKeywords('aspect/Data/restaurant_bootstrapping.dat')
+        q_sentences = loadReviewAndProcess()
+        # print(q_sentences)
+        m_sentences_annotated, m_aspectkeywords_fixed = aspectSegmenter.BootStrapping(m_sentences, m_vocabulary, m_aspectkeywords)
+        saveAnnotatedSentences(m_sentences_annotated, q_sentences,"Data/annotated_sentences_chi_final.csv",self.sid,self.p)
+        saveExtendedAspectKeywords(m_aspectkeywords_fixed,'aspect/Data/restaurant_bootstrapped_keywords_chi_final.dat')
+        print("Review Processing Done!")
+
+        
 if __name__=='__main__':
-    os.chdir('..')
-    os.chdir('..')
+    # os.chdir('..')
+    # os.chdir('..')
     print ('Load Aspect Seed Words...')
     m_aspectkeywords = aspectSegmenter.loadAspectKeywords('Data/restaurant_bootstrapping.dat')
     print ('Load Reviews And Process...')
@@ -176,4 +206,7 @@ if __name__=='__main__':
     print ('Saving Extended Aspect Keyword list')
     saveExtendedAspectKeywords(m_aspectkeywords_fixed,'Data/restaurant_bootstrapped_keywords_chi_final.dat')
     
-    
+# if nltk errors go refer this 
+# http://stackoverflow.com/questions/4867197/failed-loading-english-pickle-with-nltk-data-load
+# http://stackoverflow.com/questions/8590370/how-to-do-pos-tagging-using-the-nltk-pos-tagger-in-python
+# Zurez

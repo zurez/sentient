@@ -13,7 +13,7 @@ chi_iter = 10 # Number of bootstrapping iterations to converge
 tf_cut = 10 # discard terms occurring less than 10 times in corpus
 
 
-# Function to load Aspect Keywords from a file
+# Function to load Aspect Keywords fom a file
 # We can Aspects and seed words in file to load
 # it dynamically
 def loadAspectKeywords(filename):

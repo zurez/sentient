@@ -10,3 +10,8 @@ class Reviews(Document):
 	survey_id=StringField()
 	rating=StringField()
 	review=StringField()
+class Scraped(Document):
+	provider=StringField()
+	survey_id=StringField()
+	status=StringField()
+	# Maybe a time field?

@@ -6,7 +6,7 @@ import requests
 from collections import Counter
 from multiprocessing import Pool
 import sys
-from models.model import Reviews
+from reviews.models.model import Reviews
 # import ssl
 # from functools import wraps
 # def sslwrap(func):
@@ -100,12 +100,14 @@ class TripAdvisor(object):
 			# print (most_frequent_words_so_far)
 			counter+=1
 
-test_url="https://www.tripadvisor.in/Restaurant_Review-g1062901-d4696931-Reviews-Country_Inn_Suites_by_Carlson_Sahibabad-Ghaziabad_Uttar_Pradesh.html"
-test= TripAdvisor(test_url)
-r= test.get_data()
-# for i in r:
+if __name__ == '__main__':
+
+	test_url="https://www.tripadvisor.in/Restaurant_Review-g1062901-d4696931-Reviews-Country_Inn_Suites_by_Carlson_Sahibabad-Ghaziabad_Uttar_Pradesh.html"
+	test= TripAdvisor(test_url)
+	r= test.get_data()
+	# for i in r:
 
 
-end = time.time()
-print ("Time Taken")
-print (end-start)
+	end = time.time()
+	print ("Time Taken")
+	print (end-start)

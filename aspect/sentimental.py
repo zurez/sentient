@@ -1,9 +1,14 @@
 import csv
 from textblob import TextBlob
 import os
+try:
+	from aspect.models.model import ChiFinal,SentR
+except Exception as e:
+	from models.model import ChiFinal,SentR
 
-os.chdir('..')
-os.chdir('..')
+provider="none"
+survey_id="none"
+
 filename = "Data/annotated_sentences_chi_final.csv"
 def get_sentiment(text):
 	blob = TextBlob(text)
@@ -15,20 +20,49 @@ def get_sentiment(text):
 	if sentence_sentiment < 0:
 		return "Negative"
 
-data = []
-with open(filename, "rt") as csvfile:
-	spamreader = csv.reader(csvfile)
-	for row in spamreader:
-		data.append(row)
 
-number_of_sentences = len(data)
+class Sentiment():
+	"""docstring for Sentiment"""
+	def __init__(self,survey_id,provider):
+		self.sid= survey_id
+		self.p= provider
+	def run(self):
 
-with open("Data/sentimentalreviews.csv", "w") as out_file:
-	writer = csv.writer(out_file)
+		data = []
+		filename="aspect/Data/annotated_sentences_chi_final.csv#"+self.sid+"#"+self.p
 
-	for i in range(1, number_of_sentences):
-		sentence = data[i][3]
-		sentiment = get_sentiment(sentence)
-		line = data[i]
-		line.append(sentiment)
-		writer.writerow(line)
+		with open(filename, "rt") as csvfile:	
+			spamreader = csv.reader(csvfile)
+		# spamreader=ChiFinal.objects(survey_id=self.sid)
+			for row in spamreader:
+				data.append(row)
+		# print (data)
+		# spamreader= ChiFinal.objects()
+		# for row in spamreader:
+		# 	data.append(row)
+
+		number_of_sentences = len(data)
+
+		# with open("Data/sentimentalreviews.csv", "w") as out_file:
+		# 	writer = csv.writer(out_file)
+
+		for i in range(1, number_of_sentences):
+			# sentence = data[i][3]
+			# sentence= data.sentences
+			# print(sentence)
+			# sentiment = get_sentiment(sentence)
+			# #print("sent",sentiment)
+			# line=[]
+			
+			# line = data[i]
+			sentence = data[i][3]
+			sentiment = get_sentiment(sentence)
+			line = data[i]
+			line.append(sentiment)
+			# print ("line",line)
+			SentR(provider=self.p,survey_id=self.sid,line=line).save()
+			# writer.writerow(line)
+		#print("Sentiment Done")
+if __name__ == '__main__':
+	
+	Sentiment("1","2").run()

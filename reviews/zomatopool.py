@@ -4,7 +4,7 @@ from urllib.request import urlopen
 
 from bs4 import BeautifulSoup
 from multiprocessing import Pool
-from model import Reviews
+from reviews.models.model import Reviews,Scraped
 """from 
 VARIABLES
 """
@@ -48,15 +48,16 @@ class Zomato(object):
 		for x in data:
 			review= x.find('div').next_sibling.strip()
 			if review!=None or len(review)!=0:
-				rating=x.find('div')['aria-label']
+				rating=x.find('div')['aria-label'].replace("Rated ","")
 				Reviews(provider="zomato",survey_id=self.sid,rating=rating,review=review).save()
 	def get_data(self):
 
 		pool= Pool()
-		ids=[1,2]
+		ids=list(range(1,100))
 		pool.map(self.sub_get,ids)
-
-test_url="https://www.zomato.com/ncr/alishas-kitchen-aaya-nagar-new-delhi"
-z= Zomato(test_url)
-z.get_data()
+		Scraped(provider="zomato",survey_id=self.sid,status="done")
+if __name__ == '__main__':
+	test_url="https://www.zomato.com/ncr/alishas-kitchen-aaya-nagar-new-delhi"
+	z= Zomato(test_url)
+	z.get_data()
 
