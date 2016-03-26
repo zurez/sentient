@@ -50,10 +50,10 @@ class Sentence(object):
 # 1. Use NLTK to Tokenize the reviews and create sentences
 # 2. Apply POS Tagger, Lemma and regular expression constraints
 # 3. Expand the vocabulary per sentences        
-def loadReviewAndProcess():
+def loadReviewAndProcess(survey_id):
     # Loading Reviews in a data frame
     # df = pd.read_csv(filename)
-    reviews= Reviews.objects()
+    reviews= Reviews.objects(survey_id=survey_id)
     # num_reviews = len(df)
     # Adding ID column to existing data frame
     # df['RID'] = range(1, num_reviews + 1)
@@ -133,7 +133,7 @@ def saveAnnotatedSentences(m_sentences_annotated, q_sentences,filename,survey_id
     joined_sentences = []
     sentences_id = []
     aspect_annot = []
-    print("test",survey_id,provider)
+    # print("test",survey_id,provider)
     for stn in m_sentences_annotated:
        
         sentences_id.append(stn.rid)
@@ -184,7 +184,7 @@ class ReviewP(object):
         # self.s= sector
     def run(self):
         m_aspectkeywords = aspectSegmenter.loadAspectKeywords('aspect/Data/restaurant_bootstrapping.dat')
-        q_sentences = loadReviewAndProcess()
+        q_sentences = loadReviewAndProcess(self.sid)
         # print(q_sentences)
         m_sentences_annotated, m_aspectkeywords_fixed = aspectSegmenter.BootStrapping(m_sentences, m_vocabulary, m_aspectkeywords)
         saveAnnotatedSentences(m_sentences_annotated, q_sentences,"Data/annotated_sentences_chi_final.csv",self.sid,self.p)
