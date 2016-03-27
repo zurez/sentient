@@ -4,7 +4,7 @@ from urllib.request import urlopen
 
 from bs4 import BeautifulSoup
 from multiprocessing import Pool
-from reviews.models.model import Reviews,Scraped
+from reviews.models.model import Reviews,Scraped,Record
 """from 
 VARIABLES
 """
@@ -36,6 +36,7 @@ class Zomato(object):
 	    return rid
 	def sub_get(self,i):
 		rid= self.get_id()
+
 		payload={'entity_id':rid,
 		        'profile_action':'reviews-dd',
 		        'page':i,
@@ -51,11 +52,14 @@ class Zomato(object):
 				rating=x.find('div')['aria-label'].replace("Rated ","")
 				Reviews(provider="zomato",survey_id=self.sid,rating=rating,review=review).save()
 	def get_data(self):
-
-		pool= Pool()
-		ids=list(range(1,100))
-		pool.map(self.sub_get,ids)
-		Scraped(provider="zomato",survey_id=self.sid,status="done")
+		rid = self.get_id()
+		if len(Record.objects(rid=str(rid)))!=0:
+			print ("Already Review Collected")
+		else:
+			pool= Pool()
+			ids=list(range(1,100))
+			pool.map(self.sub_get,ids)
+			Record(provider="zomato",survey_id=self.sid,rid=str(rid)).save()
 if __name__ == '__main__':
 	test_url="https://www.zomato.com/ncr/alishas-kitchen-aaya-nagar-new-delhi"
 	z= Zomato(test_url)

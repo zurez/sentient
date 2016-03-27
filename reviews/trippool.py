@@ -6,7 +6,7 @@ import requests
 from collections import Counter
 from multiprocessing import Pool
 import sys
-from reviews.models.model import Reviews
+from reviews.models.model import Reviews,Record
 # import ssl
 # from functools import wraps
 # def sslwrap(func):
@@ -22,8 +22,10 @@ start= time.time()
 
 class TripAdvisor(object):
 	"""docstring for"""
-	def __init__(self,url):
+	def __init__(self,url,survey_id,provider="tripadvisor"):
 		self.url= url
+		self.p=provider
+		self.sid=survey_id
 	def last_links(self):
 		response= urlopen(self.url).read()
 		soup = BeautifulSoup(response)
@@ -63,8 +65,9 @@ class TripAdvisor(object):
 				# review= soup2.find('p',{'property':'reviewBody'}).text +"\n"+"#rating: "+ rating
 				review= soup2.find('p',{'property':'reviewBody'}).text
 				# print("chunk done")
-				save = Reviews(provider="tripadvisor",review=review,rating=rating).save()
-				print ("Saved")
+				print(rating)
+				save = Reviews(survey_id=self.sid,provider=self.p,review=review,rating=rating).save()
+				# print ("Saved")
 				# reviews.append(review)
 			else:
 				print("Empty Review")
@@ -72,14 +75,21 @@ class TripAdvisor(object):
 
 	def get_data(self):
 		links= self.generate_link()
-		pool= Pool(8)
-		pool.map(self.sub_get,links)
+		if len(Record.objects(links=set(links)))!=0:
+			print ("Already Reviews Collected")
+		else:
+			pool= Pool(8)
+			pool.map(self.sub_get,links)
+			Record(survey_id= self.sid,provider="tripadvisor",links= set(links)).save()
 	def multi(self):
 		links= self.generate_link()
 		# return links
-		pool= Pool(8)
-		results= pool.map(self.get_data,[links])
-		return results
+		if len(Record.objects(links=set(links)))==0:
+			print ("Already Review Collected")
+		else:
+			pool= Pool(8)
+			results= pool.map(self.get_data,[links])
+			return results
 
 	def main(self):
 		counter=0
@@ -101,13 +111,13 @@ class TripAdvisor(object):
 			counter+=1
 
 if __name__ == '__main__':
+	pass
+	# test_url="https://www.tripadvisor.in/Restaurant_Review-g1062901-d4696931-Reviews-Country_Inn_Suites_by_Carlson_Sahibabad-Ghaziabad_Uttar_Pradesh.html"
+	# test= TripAdvisor(test_url)
+	# r= test.get_data()
+	# # for i in r:
 
-	test_url="https://www.tripadvisor.in/Restaurant_Review-g1062901-d4696931-Reviews-Country_Inn_Suites_by_Carlson_Sahibabad-Ghaziabad_Uttar_Pradesh.html"
-	test= TripAdvisor(test_url)
-	r= test.get_data()
-	# for i in r:
 
-
-	end = time.time()
-	print ("Time Taken")
-	print (end-start)
+	# end = time.time()
+	# print ("Time Taken")
+	# print (end-start)

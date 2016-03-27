@@ -15,3 +15,8 @@ class Scraped(Document):
 	survey_id=StringField()
 	status=StringField()
 	# Maybe a time field?
+class Record(Document):
+	survey_id=StringField()
+	rid=StringField()
+	links=ListField()
+	provider=StringField()
