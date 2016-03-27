@@ -31,7 +31,7 @@ class Zomato(object):
 
 	def get_id(self):
 	    response= urlopen(self.url).read()
-	    soup=BeautifulSoup(response,"lxml")
+	    soup=BeautifulSoup(response)
 	    rid= int(soup.find('body')['itemid'])
 	    return rid
 	def sub_get(self,i):
@@ -53,7 +53,7 @@ class Zomato(object):
 				Reviews(provider="zomato",survey_id=self.sid,rating=rating,review=review).save()
 	def get_data(self):
 		rid = self.get_id()
-		if len(Record.objects(rid=str(rid)))!=0:
+		if len(Record.objects(survey_id= self.sid,rid=str(rid)))!=0:
 			print ("Already Review Collected")
 		else:
 			pool= Pool()
