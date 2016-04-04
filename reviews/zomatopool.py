@@ -5,6 +5,7 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 from multiprocessing import Pool
 from reviews.models.model import Reviews,Scraped,Record
+from reviews.nlp import Senti
 """from 
 VARIABLES
 """
@@ -50,7 +51,8 @@ class Zomato(object):
 			review= x.find('div').next_sibling.strip()
 			if review!=None or len(review)!=0:
 				rating=x.find('div')['aria-label'].replace("Rated ","")
-				Reviews(provider="zomato",survey_id=self.sid,rating=rating,review=review).save()
+				sentiment= Senti(review).sent()
+				Reviews(provider="zomato",survey_id=self.sid,rating=rating,review=review,sentiment=sentiment).save()
 	def get_data(self):
 		rid = self.get_id()
 		if len(Record.objects(survey_id= self.sid,rid=str(rid)))!=0:

@@ -7,6 +7,7 @@ from collections import Counter
 from multiprocessing import Pool
 import sys
 from reviews.models.model import Reviews,Record
+from reviews.nlp import Senti
 # import ssl
 # from functools import wraps
 # def sslwrap(func):
@@ -64,9 +65,11 @@ class TripAdvisor(object):
 				rating=soup2.find('img',{'class':'sprite-rating_s_fill'})['alt'][0]
 				# review= soup2.find('p',{'property':'reviewBody'}).text +"\n"+"#rating: "+ rating
 				review= soup2.find('p',{'property':'reviewBody'}).text
+				sentiment= Senti(review).sent()
 				# print("chunk done")
 				print(rating)
-				save = Reviews(survey_id=self.sid,provider=self.p,review=review,rating=rating).save()
+				save = Reviews(survey_id=self.sid,provider=self.p,review=review,rating=rating,sentiment=sentiment).save()
+
 				# print ("Saved")
 				# reviews.append(review)
 			else:

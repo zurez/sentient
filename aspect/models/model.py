@@ -32,9 +32,13 @@ class SentR(Document):
 	line=ListField()
 	survey_id=StringField()
 	provider=StringField()
+class WordCloud(Document):
+	provider=StringField()
+	survey_id=StringField()
+	wordcloud=DictField()
 
-		
-	
-		
-# for i in Aspect.objects():
-# 	print(i.service)
+class Sentiments(Document):
+	survey_id=StringField()
+	provider=StringField()
+	review=StringField()
+	sentiment=StringField()
