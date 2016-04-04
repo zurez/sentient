@@ -84,6 +84,3 @@ ENV/
 # Spyder project settings
 .spyderproject
 
-Data
-*.text
-*.txt
