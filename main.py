@@ -30,9 +30,9 @@ class Sentient(object):
 		self.wordcloud()
 		self.run_ml()
 if __name__ == '__main__':
-	url= "https://www.zomato.com/ncr/purani-dilli-restaurant-zakir-nagar-new-delhi"
-	url="https://www.tripadvisor.in/Restaurant_Review-g1162523-d4009998-Reviews-The_Beer_Cafe-Kirtinagar_Uttarakhand.html"
-	survey_id="amazing"
-	provider="tripadvisor"
+	# url= "https://www.zomato.com/ncr/purani-dilli-restaurant-zakir-nagar-new-delhi"
+	url="https://www.zomato.com/bangalore/petoo-yelahanka"
+	survey_id="jgQj5jzK7kV922jQXk6"
+	provider="zomato"
 	Sentient(url,survey_id,provider).run()
 	

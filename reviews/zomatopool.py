@@ -25,7 +25,7 @@ header={
 url='https://www.zomato.com/php/social_load_more.php'
 class Zomato(object):
 	"""docstring for Zomato"""
-	def __init__(self,url,survey_id="not provided"):
+	def __init__(self,url,survey_id="jgQj5jzK7kV922jQXk6"):
 	    self.url= url
 	    self.sid= survey_id
 	def get_total(self):pass
@@ -63,7 +63,7 @@ class Zomato(object):
 			pool.map(self.sub_get,ids)
 			Record(provider="zomato",survey_id=self.sid,rid=str(rid)).save()
 if __name__ == '__main__':
-	test_url="https://www.zomato.com/ncr/alishas-kitchen-aaya-nagar-new-delhi"
+	test_url="https://www.zomato.com/bangalore/petoo-yelahanka"
 	z= Zomato(test_url)
 	z.get_data()
 
