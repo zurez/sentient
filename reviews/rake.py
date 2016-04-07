@@ -41,10 +41,11 @@ def separate_words(text, min_word_return_size):
     """
     splitter = re.compile('[^a-zA-Z0-9_\\+\\-/]')
     words = []
+    min_word_return_size=5
     for single_word in splitter.split(text):
         current_word = single_word.strip().lower()
         #leave numbers in phrase, but don't count as words, since they tend to invalidate scores of their phrases
-        if len(current_word) > min_word_return_size and current_word != '' and not is_number(current_word):
+        if len(current_word) < min_word_return_size and current_word != '' and not is_number(current_word):
             words.append(current_word)
     return words
 
@@ -85,7 +86,7 @@ def calculate_word_scores(phraseList):
     word_frequency = {}
     word_degree = {}
     for phrase in phraseList:
-        word_list = separate_words(phrase, 0)
+        word_list = separate_words(phrase, 1)
         word_list_length = len(word_list)
         word_list_degree = word_list_length - 1
         #if word_list_degree > 3: word_list_degree = 3 #exp.
@@ -115,7 +116,7 @@ def generate_candidate_keyword_scores(phrase_list, word_score):
         candidate_score = 0
         for word in word_list:
             candidate_score += word_score[word]
-        keyword_candidates[phrase] = candidate_score
+        keyword_candidates[phrase] = round(candidate_score,2)
     return keyword_candidates
 
 
