@@ -3,6 +3,11 @@ from reviews.rake import Rake
 from reviews.models.model import Reviews,WordCloudD
 from collections import OrderedDict
 from operator import itemgetter
+
+
+from reviews.keywordcount import KeywordCount
+
+
 class Senti(object):
 	"""docstring for Senti"""
 	def __init__(self, txt):
@@ -27,7 +32,7 @@ class WordCloud(object):
 		reviews= Reviews.objects(survey_id=self.sid, provider= self.p)
 		text=""
 		for i in reviews:
-			print (i.review) 
+			# print (i.review) 
 
 			text+=i.review
 		return text
@@ -47,8 +52,15 @@ class WordCloud(object):
 		"""
 		stoppath="reviews/models/stopwords.txt"
 		text= self.collect_reviews()
-		rake= Rake(stoppath)
-		keywords= rake.run(text)
+
+
+		# rake= Rake(stoppath)
+		# keywords= rake.run(text)
+		# print (keywords)
+
+		keywordcounts = KeywordCount(stoppath)
+		keywords = keywordcounts.run(text)
+
 		wc= self.wc_to_dict(keywords)
 		
 		print (wc)
