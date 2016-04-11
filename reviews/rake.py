@@ -41,7 +41,7 @@ def separate_words(text, min_word_return_size):
     """
     splitter = re.compile('[^a-zA-Z0-9_\\+\\-/]')
     words = []
-    min_word_return_size=2
+    min_word_return_size=5
     for single_word in splitter.split(text):
         current_word = single_word.strip().lower()
         #leave numbers in phrase, but don't count as words, since they tend to invalidate scores of their phrases
