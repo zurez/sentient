@@ -1,7 +1,7 @@
 from mongoengine import *
 # Connect to Database
 #lazy connection
-connect("qwer")
+connect("testdemo")
 class Reviews(Document):
 	"""docstring for Reviews"""
 	

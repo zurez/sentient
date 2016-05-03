@@ -9,20 +9,23 @@ from aspect.models.model import Aspect,Reviews,SentR
 def aspect_rating(review_rows, aspect_rows, overall):
 	positive_rows = [row for row in aspect_rows if row[2] == 'Positive']
 	negative_rows = [row for row in aspect_rows if row[2] == 'Negative']
+	# print ("Positive: ", len(positive_rows), "Negative: ", len(negative_rows))
+	if len(aspect_rows) == 0:
+		y = overall
+	else:
+		if len(positive_rows) == len(negative_rows):
+			x = (len(positive_rows) + len(negative_rows))*float(overall)/len(review_rows)
+			y = (x + 10)/5
 
-	if len(positive_rows) == len(negative_rows):
-		x = (len(positive_rows) + len(negative_rows))*float(overall)/len(review_rows)
-		y = (x + 10)/5
+		if len(positive_rows) > len(negative_rows):
+			diff = len(positive_rows) - len(negative_rows)
+			x = (diff*len(review_rows))/(float(overall) * (len(positive_rows) + len(negative_rows)))
+			y = 3 + 2*x/5
 
-	if len(positive_rows) > len(negative_rows):
-		diff = len(positive_rows) - len(negative_rows)
-		x = (diff*len(review_rows))/(float(overall) * (len(positive_rows) + len(negative_rows)))
-		y = 3 + 2*x/5
-
-	if len(positive_rows) < len(negative_rows):
-		diff = len(negative_rows) - len(positive_rows)
-		x = (diff*len(review_rows))/(float(overall) * (len(positive_rows) + len(negative_rows)))
-		y = 2*x/5
+		if len(positive_rows) < len(negative_rows):
+			diff = len(negative_rows) - len(positive_rows)
+			x = (diff*len(review_rows))/(float(overall) * (len(positive_rows) + len(negative_rows)))
+			y = 2*x/5
 
 	return y
 
@@ -37,6 +40,11 @@ class AspectR(object):
 		self.p=provider
 	def run(self):
 		data = []
+
+		all_food_ratings = []
+		all_service_ratings = []
+		all_price_ratings = []
+
 		spamreader=SentR.objects(survey_id=self.sid)
 		# a= spamreader.line
 		# reviews= 
@@ -49,7 +57,6 @@ class AspectR(object):
 			polarity = row.line[5]
 			data_line = [review_ID, aspect, polarity]
 			data.append(data_line)
-		# print(data)
 
 		overall_ratings = []
 		spamreader=Reviews.objects(survey_id=self.sid)
@@ -80,12 +87,15 @@ class AspectR(object):
 				AR_service = overall
 				AR_price = overall
 			
-			# OUTPUT
-			# print (review_rows)
-			# print ("Food: ", AR_food, " Service: ", AR_service, " Price: ", AR_price)
-			# print ("Overall", overall)
-			r= Aspect(sector="food",provider=self.p,survey_id=self.sid,food=str(AR_food),service=str(AR_service),price=str(AR_price),overall=str(overall)).save()
+			# r= Aspect(sector="food",provider=self.p,survey_id=self.sid,food=str(AR_food),service=str(AR_service),price=str(AR_price),overall=str(overall)).save()
 			print("Aspect Rating Done")
-# 	[['1', '1', 'Positive']]
-# Food:  2.0  Service:  3.088888888888889  Price:  2.0
-# Overall 4.5
+			all_food_ratings.append(AR_food)
+			all_price_ratings.append(AR_price)
+			all_service_ratings.append(AR_service)
+
+		print ("Food: ", all_food_ratings)
+		print ("Price: ", all_price_ratings)
+		print ("Service: ", all_service_ratings)
+
+
+
