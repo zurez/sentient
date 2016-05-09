@@ -1,11 +1,15 @@
 from textblob import TextBlob
-from reviews.rake import Rake
+
 from reviews.models.model import Reviews,WordCloudD
 from collections import OrderedDict
 from operator import itemgetter
 
-
-from reviews.keywordcount import KeywordCount
+try:
+	from reviews.keywordcount import KeywordCount
+	from reviews.rake import Rake
+except:
+	from rake import Rake
+	from keywordcount import KeywordCount
 
 
 class Senti(object):
