@@ -1,15 +1,17 @@
 from textblob import TextBlob
 
-from reviews.models.model import Reviews,WordCloudD
+#from reviews.models.model import Reviews,WordCloudD
 from collections import OrderedDict
 from operator import itemgetter
 
 try:
 	from reviews.keywordcount import KeywordCount
 	from reviews.rake import Rake
+	from reviews.models.model import Reviews, WordCloudD
 except:
 	from rake import Rake
 	from keywordcount import KeywordCount
+	from models.model import Reviews, WordCloudD
 
 
 class Senti(object):
@@ -18,12 +20,12 @@ class Senti(object):
 		self.t= txt
 	def sent(self):
 		blob = TextBlob(self.t)
-		sentence_sentiment = blob.sentences[0].sentiment.polarity
-		if sentence_sentiment > 0:
+		review_sentiment = blob.sentiment.polarity
+		if review_sentiment > 0:
 			return "Positive"
-		if sentence_sentiment == 0:
+		if review_sentiment == 0:
 			return "Neutral"
-		if sentence_sentiment < 0:
+		if review_sentiment < 0:
 			return "Negative"
 
 class WordCloud(object):

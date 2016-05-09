@@ -11,7 +11,8 @@ class Sentient(object):
 		self.sid= survey_id
 		self.p= provider
 	def scrap_data(self):
-		if "zomato.com" in self.u:
+		print("************************")
+		if "zomato.com" in self.u or self.p=="zomato":
 			# self.p= "zomato"
 			Zomato(self.u,self.sid).get_data()
 			print("zomato")
@@ -29,10 +30,13 @@ class Sentient(object):
 		self.scrap_data()
 		self.wordcloud()
 		self.run_ml()
+		#SOMETHING IS VERY WRONG!!kyaaa?DID YOU JUST NOT SEE I DISABLED WORDCLOUD AND ML
+		#THEY SHOULD NOT BE RUN. ALSO I DONT SEE STARS
 if __name__ == '__main__':
 	# url= "https://www.zomato.com/ncr/purani-dilli-restaurant-zakir-nagar-new-delhi"
-	url="https://www.zomato.com/ncr/chaayos-nehru-place-new-delhi"
-	survey_id="or8Q4A1xDoXr5ybmDmd"
+	url="https://www.zomato.com/ncr/chaayos-sector-38-noida"
+	#survey_id="or8Q4A1xDoXr5ybmDmf"
+	survey_id="test124"
 	provider="zomato"
 	Sentient(url,survey_id,provider).run()
 	

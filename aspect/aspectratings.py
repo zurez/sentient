@@ -1,9 +1,6 @@
 import csv
 import os
-try:
-	from jupiter.sentient.aspect.models.model import Aspect,Reviews,SentR
-except:
-	from models.model import Aspect,Reviews,SentR
+from aspect.models.model import Aspect,Reviews,SentR
 # from mongoengine import *
 # class Reviews(Document):
 # 	pass
@@ -193,12 +190,11 @@ class AspectR(object):
 				service_rows = [row for row in review_rows if row[1] == '1']
 				price_rows = [row for row in review_rows if row[1] == '2']
 				neutral_rows = [row for row in review_rows if row[1] == '-1']
-				# print(food_rows)
+				# print(feood_rows)
 				overall = overall_ratings[review_ID]
 
 				if len(review_rows) !=0 :
 					AR_food = aspect_rating(review_rows, food_rows, overall)
-					print(AR_food)
 					AR_service = aspect_rating(review_rows, service_rows, overall)
 					AR_price = aspect_rating(review_rows, price_rows, overall)
 					if AR_food <=2:
@@ -213,6 +209,7 @@ class AspectR(object):
 						AR_price=AR_price+AspectRating(self.sid).get_c("price")
 					else:
 						AR_price = aspect_rating(review_rows, price_rows, overall)-AspectRating(self.sid).get_c("price")
+				
 				else :
 					AR_food = overall
 					AR_service = overall
@@ -220,9 +217,9 @@ class AspectR(object):
 					
 				# OUTPUT
 				# print (review_rows)
-				return("Food: ", AR_food, " Service: ", AR_service, " Price: ", AR_price)
+				#return("Food: ", AR_food, " Service: ", AR_service, " Price: ", AR_price)
 				# print ("Overall", overall)
-				# r= Aspect(sector="food",provider=self.p,survey_id=self.sid,food=str(AR_food),service=str(AR_service),price=str(AR_price),overall=str(overall)).save()
+				r= Aspect(sector="food",provider=self.p,survey_id=self.sid,food=str(AR_food),service=str(AR_service),price=str(AR_price),overall=str(overall)).save()
 				print("Aspect Rating Done")
 		except Exception as e:
 			# print("aspect_rating3",e)
@@ -230,5 +227,7 @@ class AspectR(object):
 # 	[['1', '1', 'Positive']]
 # Food:  2.0  Service:  3.088888888888889  Price:  2.0
 # Overall 4.5
-a= AspectR('children1',"zomato")
-print(a.run())
+if __name__ == '__main__':
+	#main()
+	a= AspectR('children1',"zomato")
+	print(a.run())

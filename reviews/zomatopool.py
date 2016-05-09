@@ -5,9 +5,8 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 from multiprocessing import Pool
 try:
-	from jupiter.sentient.reviews.models.model import Reviews,Scraped,Record
-	from jupiter.sentient.reviews.nlp import Senti
-	from jupiter.sentient.models.model import Status
+	from reviews.models.model import Reviews,Scraped,Record
+	from reviews.nlp import Senti
 except:
 	from models.model import Reviews,Scraped,Record
 	from nlp import Senti
@@ -67,7 +66,7 @@ class Zomato(object):
 				if review!=None or len(review)!=0:
 					rating=x.find('div')['aria-label'].replace("Rated ","")
 					sentiment= Senti(review).sent()
-					# print (review)
+					print (review)
 					Reviews(provider="zomato",survey_id=self.sid,rating=rating,review=review,sentiment=sentiment).save()
 		except :print("lol")
 	def get_data(self):
@@ -80,7 +79,7 @@ class Zomato(object):
 			# 		pass
 			# 	else:
 			# 		objects=Reviews.objects(survey_id= self.sid[i],provider=self.p)
-			# 		for obj in objects:
+			tt# 		for obj in objects:
 			# 			Reviews()
 			# 		pass
 		else:
@@ -101,7 +100,7 @@ class Zomato(object):
 				pool.map(self.sub_get,ids)
 				
 				Record(provider="zomato",survey_id=self.sid,rid=str(rid)).save()
-				Status(unique_identifier=self.sid+provider,scraped_status="success").save()
+				#Status(unique_identifier=self.sid+provider,scraped_status="success").save()
 if __name__ == '__main__':
 	test_url="https://www.zomato.com/bangalore/petoo-sarjapur-road"
 	
