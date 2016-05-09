@@ -137,33 +137,16 @@ def saveAnnotatedSentences(m_sentences_annotated, q_sentences,filename,survey_id
     for stn in m_sentences_annotated:
        
         sentences_id.append(stn.rid)
-        # print (stn.aspectID)
-        # asp_ID = ""
-        # if stn.aspectID == 0:
-        #     asp_ID = "Food"
-        # if stn.aspectID == 1:
-        #     asp_ID = "Price"
-        # if stn.aspectID == 2:
-        #     asp_ID = "Service"
-        # else:
-        #     asp_ID = "None"
-        # aspect_annot.append(asp_ID)
-     
         aspect_annot.append(stn.aspectID)
 
         wtokens = []
-        # print (stn.ttoken)
         for tkn in stn.ttoken:
-            # print (tkn)
             wtokens.append(tkn.lemma)
+        
         sentences=" ".join(wtokens)
         joined_sentences.append(" ".join(wtokens))
-        # print (joined_sentences)
-        # print ("count",count)
-        # print ("a",a)
-        # ChiFinal(survey_id=survey_id,provider=provider,rid=stn.rid,aspects=stn.aspectID,original=q_sentences[count],sentences=sentences).save()
-        # count+=1
     # ChiFinal(survey_id=survey_id,provider=provider,data={"RID":sentences_id, "sentences":joined_sentences, "aspects":aspect_annot, "original":q_sentences})
+    
     output = pd.DataFrame( data={"RID":sentences_id, "sentences":joined_sentences, "aspects":aspect_annot, "original":q_sentences})     
     output.to_csv("aspect/"+filename+"#"+survey_id+"#"+provider)    
 

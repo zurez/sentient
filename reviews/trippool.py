@@ -65,10 +65,11 @@ class TripAdvisor(object):
 				rating=soup2.find('img',{'class':'sprite-rating_s_fill'})['alt'][0]
 				# review= soup2.find('p',{'property':'reviewBody'}).text +"\n"+"#rating: "+ rating
 				review= soup2.find('p',{'property':'reviewBody'}).text
+				print (review)
 				sentiment= Senti(review).sent()
 				# print("chunk done")
 				print(rating)
-				save = Reviews(survey_id=self.sid,provider=self.p,review=review,rating=rating,sentiment=sentiment).save()
+				# save = Reviews(survey_id=self.sid,provider=self.p,review=review,rating=rating,sentiment=sentiment).save()
 
 				# print ("Saved")
 				# reviews.append(review)
@@ -83,7 +84,7 @@ class TripAdvisor(object):
 		else:
 			pool= Pool(8)
 			pool.map(self.sub_get,links)
-			Record(survey_id= self.sid,provider="tripadvisor",links= set(links)).save()
+			# Record(survey_id= self.sid,provider="tripadvisor",links= set(links)).save()
 	def multi(self):
 		links= self.generate_link()
 		# return links
@@ -109,8 +110,6 @@ class TripAdvisor(object):
 			# print (a[4])
 			res= res+a
 			most_frequent_words_so_far = Counter(res).most_common(20)
-			print (most_frequent_words_so_far)
-			# print (most_frequent_words_so_far)
 			counter+=1
 
 if __name__ == '__main__':

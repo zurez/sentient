@@ -31,8 +31,8 @@ class Sentient(object):
 		self.run_ml()
 if __name__ == '__main__':
 	# url= "https://www.zomato.com/ncr/purani-dilli-restaurant-zakir-nagar-new-delhi"
-	url="https://www.zomato.com/bangalore/petoo-sarjapur-road"
-	survey_id="QK8gLgDxry7gX7yMWOB"
+	url="https://www.zomato.com/ncr/chaayos-nehru-place-new-delhi"
+	survey_id="or8Q4A1xDoXr5ybmDmd"
 	provider="zomato"
 	Sentient(url,survey_id,provider).run()
 	
