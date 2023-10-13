@@ -1,8 +1,3 @@
-'''
-Created on 27-Mar-2015
-
-@author: Himani
-'''
 from nltk.tokenize import word_tokenize
 from nltk.tokenize import sent_tokenize
 from nltk.corpus import stopwords
