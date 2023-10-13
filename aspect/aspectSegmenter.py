@@ -1,8 +1,3 @@
-'''
-Created on 27-Mar-2015
-
-@author: Himani
-'''
 import re
 import numpy as np
 import operator    
